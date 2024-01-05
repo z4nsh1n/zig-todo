@@ -11,7 +11,7 @@ var alloc: std.mem.Allocator = undefined;
 pub fn main() !void {
     var gps = std.heap.GeneralPurposeAllocator(.{}){};
     //defer _ = gps.deinit();
-    //const out = std.io.getStdOut().writer();
+    const stdout = std.io.getStdOut().writer();
     alloc = gps.allocator();
 
     // TODO arraylists
@@ -58,7 +58,11 @@ pub fn main() !void {
             args.CmdType.done => unreachable,
             args.CmdType.list => {
                 for (todos.items) |todo| {
-                    std.debug.print("{s} {}\n", .{ todo.title, todo.done });
+                    if (todo.done) {
+                        try std.fmt.format(stdout, "[X] {s}\n", .{todo.title});
+                    } else {
+                        try std.fmt.format(stdout, "[ ] {s}\n", .{todo.title});
+                    }
                 }
             },
         }
