@@ -55,13 +55,17 @@ pub fn main() !void {
     for (cmds.items) |cmd| {
         switch (cmd) {
             args.CmdType.todo => |todo| try todos.append(Todo{ .done = false, .title = todo }),
-            args.CmdType.done => |index| todos.items[index].done = true,
+            args.CmdType.done => |index| todos.items[index - 1].done = true,
+            args.CmdType.toggle => |index| todos.items[index - 1].done = !todos.items[index - 1].done,
             args.CmdType.list => {
-                for (todos.items) |todo| {
+                try std.fmt.format(stdout, "\x1b[2J\x1b[H", .{});
+                for (todos.items, 1..) |todo, idx| {
                     if (todo.done) {
-                        try std.fmt.format(stdout, "[X] {s}\n", .{todo.title});
+                        try std.fmt.format(stdout, "\x1b[38;2;0;255;0m", .{});
+                        try std.fmt.format(stdout, "({})[X] {s}\n", .{ idx, todo.title });
+                        try std.fmt.format(stdout, "\x1b[0m", .{});
                     } else {
-                        try std.fmt.format(stdout, "[ ] {s}\n", .{todo.title});
+                        try std.fmt.format(stdout, "({})[ ] {s}\n", .{ idx, todo.title });
                     }
                 }
             },

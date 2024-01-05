@@ -1,10 +1,11 @@
 const std = @import("std");
 
-pub const CmdType = enum { todo, list, done };
+pub const CmdType = enum { todo, list, done, toggle };
 pub const Cmd = union(CmdType) {
     todo: []const u8,
     list: void,
     done: u32,
+    toggle: u32,
     //swap: .{ u32, u32 },
 };
 pub fn CmdArgs() type {
@@ -41,6 +42,9 @@ pub fn CmdArgs() type {
                 } else if (std.mem.eql(u8, cmd, "done")) {
                     const idx = self.args.next() orelse "0";
                     try self.cmdlist.append(Cmd{ .done = try std.fmt.parseInt(u32, idx, 10) });
+                } else if (std.mem.eql(u8, cmd, "toggle")) {
+                    const idx = self.args.next() orelse "0";
+                    try self.cmdlist.append(Cmd{ .toggle = try std.fmt.parseInt(u32, idx, 10) });
                 } else {
                     std.debug.print("Unknow command!!!", .{});
                     unreachable;
