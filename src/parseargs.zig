@@ -39,7 +39,8 @@ pub fn CmdArgs() type {
                 } else if (std.mem.eql(u8, cmd, "list")) {
                     try self.cmdlist.append(Cmd{ .list = {} });
                 } else if (std.mem.eql(u8, cmd, "done")) {
-                    unreachable;
+                    const idx = self.args.next() orelse "0";
+                    try self.cmdlist.append(Cmd{ .done = try std.fmt.parseInt(u32, idx, 10) });
                 } else {
                     std.debug.print("Unknow command!!!", .{});
                     unreachable;

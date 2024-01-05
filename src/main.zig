@@ -55,7 +55,7 @@ pub fn main() !void {
     for (cmds.items) |cmd| {
         switch (cmd) {
             args.CmdType.todo => |todo| try todos.append(Todo{ .done = false, .title = todo }),
-            args.CmdType.done => unreachable,
+            args.CmdType.done => |index| todos.items[index].done = true,
             args.CmdType.list => {
                 for (todos.items) |todo| {
                     if (todo.done) {
