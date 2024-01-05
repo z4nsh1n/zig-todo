@@ -56,6 +56,7 @@ pub fn main() !void {
         switch (cmd) {
             args.CmdType.todo => |todo| try todos.append(Todo{ .done = false, .title = todo }),
             args.CmdType.done => |index| todos.items[index - 1].done = true,
+            args.CmdType.del => |index| _ = todos.orderedRemove(index - 1),
             args.CmdType.toggle => |index| todos.items[index - 1].done = !todos.items[index - 1].done,
             args.CmdType.list => {
                 try std.fmt.format(stdout, "\x1b[2J\x1b[H", .{});
